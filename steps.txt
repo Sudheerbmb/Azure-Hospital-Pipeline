@@ -1,0 +1,39 @@
+1.Create Resource Group
+2.Create Event Hub and connect with the source 
+3.+ event hub connect with our patient_flow_generator
+4.Search for azure databricks choose resource group and luanch the azure databricks
+5.Create Storageaccount LRS go to resource and create three containers and create four containers bronze,silver,gold,synapseworkspace
+6.Go to resource in databricks and create a compute cluster select standrad f4 select single nod ewhile creating worker type
+7.In bronze notebook we have to data out from stream and converting from binary as we are using kafka convert it into json
+8.Search for keyvault and select resource group click on go to resource we will save connection string for event hub  and access key for storage account withput actually exposing themclick on objects left side and click on secrets but we need click IAM click add role assignemtn search for keyvault and select memberzs serch for  your name with yout mail and assign..
+9.copy the primary connection sytring of the event hub shared access policies and previosu thing add this key as secret value and cretae secret
+10/Go to storage account and sleect access key and create another secret  and drop this secret value  and creta ethe secret now we have both the event hub and storage account secret keys 
+11.In the databricks bronze remove everything after .net and paste /#secrets/createscope and hit run we will land in create secret scope page 
+12.To get the DNS go to key vault expand settings go to properties copy vault url paste in dns and also copy the resource id from the properties and paste in the create secret scope section  and also name the scope 
+13.Go to workspace at the connection string place drop "event_hub_conn_str = dbutils.secrets.get(scope = "<<scope_name>>", key = "eventhub-connection")
+14.Do the same for the storage account spark configuration and add spark.conf.set(
+  "fs.azure.account.key.hospitalstoraage.dfs.core.windows.net",
+  dbutils.secrets.get(scope = "hospitalanalyticsvaultscope", key = "storage-connection") key should be storage connection 
+
+
+)
+go to keyvault IAM hospitalvualt created key add role assignement add keyvault sceret user role assignemtn and serahc for azure databricks to read the access keys 
+15.Connect to the cluster
+namespace credential should be Namespace_hostname
+16.In silver clean data storage account read from it save it in dataframe we clean it we write it to silver path and do the necessary things 
+17.For the gold transofmration we use star schema fact and dimensioanl data 
+open the keyvault click on secret , click on profile pic on databricks click on dveeloper click on acces token adn click on genrate new token and copy the token
+18.Go to data factory crate a new data factory and click on launch studio left panel click on manage clcik on creat elinked service click on azure key vault clcik on generate create a sceret paste the secrety value there and create go to IAM add role assignemtn serach for key vault secret user  click on managed idientity click on sleect member s on managed identity sleect data factory and treview assign
+19.Now on datafactory click on linked servioce clcik onb kety vault name it something and test connection
+create another linked service click on azure compite select azure databricks select created databricks workspace use existing cluster use authentication type as azure key vault select databricks connection  choose the xisting clsuter click on test connection
+create anothe rlinkedsrvice select azure data lake gen2 authentication type account key  sele t test connection 
+20.Click on authgor click on + icon  dataset azure data lake gen 2 sleect data fromat as parque  linked service hopsital storage file path as silver/patient flow  click ok
+21.select pipeline in activity search metadata on down panel on settings select creatd pqrque on field list select child itmes and also search for if coniditon and connect the meta data tab with the if condition
+22.For the  if condiiton panel  on activities @greateroreuqlas(lenght(activity("Get metadat1).ouytput.childitems),5)
+it means new 5 records it will be trigegreed 
+23.click on + symbol on if ocnidition tab  sleect databrick noetebook  on settings notebook path users mail id gold transform sleect gold ttransform  
+24.clcik on ad dtrigger typoe scehdule  for every 5 minutes click ok clcik on publish
+gold notebook will be triggered whwneever 5 new recoreds are added click on debug and the pipeline will be queued
+25.To alert the user in case of failure clcik on  monitor inside data factory  cick on alerts  create an alert rule click dtaa factory click apply on conditiin faile dpipeline runs metrics aggregation typoe is count threhsold should be 1 actions use query action group  email azure create 
+26.Click on azure synapse analytics go to resource open synapse studio click on data manage sql pool create new dedicated swl pool select lowest bandwidth reviw + create  lcick on data our sql pool will be there 
+27.clcik on datapool right pool create new script empty script and pass all sql commands 
