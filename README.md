@@ -139,15 +139,6 @@ The **Gold layer** data in Synapse follows a **star schema** for optimized analy
 
 
 
-### **🔗 Synapse → Power BI Connection**
-- Connected **Azure Synapse SQL Pool** to Power BI using a direct SQL connection.  
-- Imported **FactPatientFlow** and **Dimension tables**.  
-- Established relationships for **Star Schema-based reporting**.  
-
-
-
-<img width="1282" height="724" alt="Screenshot 2025-08-30 155951" src="https://github.com/user-attachments/assets/cf1f84dc-c1a5-4f07-84aa-1658abb4db16" />
-
 ---
 
 ## ✅ Key Outcomes
